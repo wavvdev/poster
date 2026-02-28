@@ -7,13 +7,9 @@ export class LiquidDnBWorker extends IWorker {
   makeInstrumental = true;
 
   musicPrompt =
-    "Liquid drum & bass / jungle fusion at 172 BPM, " +
-    "Extended DJ-friendly intro with filtered minor-key arp, ping-pong delay widening gradually; " +
-    "jungle break creeps in with chopped Amen edits and tight ghosted snares, " +
-    "First drop brings deep rolling sub and smooth Reese layer, Juno-style pads gluing the mids, " +
-    "Second pass adds brighter top-end percussion and subtle vocal chops for lift, " +
-    "then strips back to pads and arp for an atmospheric outro, " +
-    "jungle, warm, deep, breaks, drum and bass, slow, bassline, smooth, breakbeat";
+    "Liquid DnB jungle fusion 172 BPM, filtered arp intro, chopped Amen breaks, " +
+    "deep rolling sub with Reese layer, Juno pads, vocal chops, atmospheric outro, " +
+    "warm, deep, smooth, breakbeat";
 
   imagePrompt =
     "a melancholic anime girl with long black hair resting her chin on her hands, " +
