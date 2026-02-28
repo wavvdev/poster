@@ -2,10 +2,9 @@ import path from "path";
 import { mkdirSync, readdirSync, unlinkSync } from "fs";
 import winston from "winston";
 import logger from "../logger/logger";
-import { crossfadeMixAndSave, downloadTrack } from "../replicate/music";
+import { crossfadeMixAndSave, downloadTrack, createVideo } from "../ffmpeg/ffmpeg";
 import { generate as generateSuno } from "../suno/suno";
 import { generateAndSave as generateAndSaveImage } from "../replicate/images";
-import { createVideo } from "../video/video";
 import { Queue } from "../queue";
 
 const OUTPUT_DIR = path.resolve(process.cwd(), "output");

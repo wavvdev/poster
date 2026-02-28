@@ -12,13 +12,11 @@ export class LiquidDnBWorker extends IWorker {
     "warm, deep, smooth, breakbeat";
 
   imagePrompt =
-    "a melancholic anime girl with long black hair resting her chin on her hands, " +
-    "staring through a CRT monitor in a dark room, blue monochrome lighting, " +
-    "hand-drawn cel animation style from the late 1990s, thin ink linework, " +
-    "faded japanese text and kanji overlaid like a corrupted VHS tape, " +
-    "heavy film grain and analog noise, washed out contrast like a scan from an old artbook, " +
-    "inspired by Yoshitoshi ABe illustration work, muted tones, no bright colors, " +
-    "composition like a still frame from a 1998 anime OVA captured on a worn VHS tape";
+    "fragmented silhouette dissolving into tangled telephone wires against a bleeding sunset, " +
+    "mixed media collage of torn manga pages and circuit diagrams layered over 16mm film stills, " +
+    "VHS tracking corruption eating the edges, hand-painted ink wash textures, " +
+    "no face visible, muted rust and deep teal, Kon Satoshi meets Shinichi Sakamoto, " +
+    "uncomfortable negative space, grain-heavy, lo-fi decay";
 
   async upload(filePath: string): Promise<void> {
     this.log.info("uploading", { filePath });

@@ -1,54 +1,13 @@
-import Replicate from "replicate";
 import ffmpeg from "fluent-ffmpeg";
 import { writeFile } from "fs/promises";
 import axios from "axios";
 import logger from "../logger/logger";
-import { config } from "../config/config";
-const replicate = new Replicate({ auth: config.replicate.apiToken });
 
-async function downloadTrack(url: string, dest: string): Promise<string> {
+export async function downloadTrack(url: string, dest: string): Promise<string> {
   const res = await axios.get(url, { responseType: "arraybuffer" });
   await writeFile(dest, Buffer.from(res.data));
   logger.info("track downloaded", { dest });
   return dest;
-}
-
-export async function generateMusic(
-  prompt: string,
-  opts?: {
-    duration?: number;
-    seed?: number;
-    temperature?: number;
-    topK?: number;
-    topP?: number;
-    classifierFreeGuidance?: number;
-    modelVersion?: "stereo-large" | "stereo-melody-large" | "melody-large" | "large";
-    outputFormat?: "mp3" | "wav";
-    normalizationStrategy?: "loudness" | "clip" | "peak" | "rms";
-  },
-): Promise<string> {
-  logger.info("generating music", { seed: opts?.seed });
-
-  const output = (await replicate.run(
-    "meta/musicgen:671ac645ce5e552cc63a54a2bbff63fcf798043055d2dac5fc9e36a837eedcfb",
-    {
-      input: {
-        prompt,
-        seed: opts?.seed ?? -1,
-        temperature: opts?.temperature ?? 1,
-        top_k: opts?.topK ?? 250,
-        top_p: opts?.topP ?? 0,
-        classifier_free_guidance: opts?.classifierFreeGuidance ?? 3,
-        model_version: opts?.modelVersion ?? "stereo-large",
-        output_format: opts?.outputFormat ?? "wav",
-        duration: opts?.duration ?? 8,
-        normalization_strategy: opts?.normalizationStrategy ?? "loudness",
-      },
-    },
-  )) as any;
-
-  logger.info("music generated", { url: output.url() });
-  return output.url();
 }
 
 export function buildCrossfadeFilters(
@@ -106,4 +65,34 @@ export async function crossfadeMixAndSave(
   });
 }
 
-export { downloadTrack };
+export function createVideo(
+  imagePath: string,
+  audioPath: string,
+  outputPath: string,
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    logger.info("creating video", { imagePath, audioPath, outputPath });
+
+    ffmpeg()
+      .input(imagePath)
+      .inputOptions("-loop", "1")
+      .input(audioPath)
+      .outputOptions([
+        "-c:v libx264",
+        "-tune stillimage",
+        "-c:a aac",
+        "-b:a 192k",
+        "-pix_fmt yuv420p",
+        "-shortest",
+      ])
+      .on("end", () => {
+        logger.info("video created", { outputPath });
+        resolve(outputPath);
+      })
+      .on("error", (err) => {
+        logger.error("video creation failed", { error: err.message });
+        reject(err);
+      })
+      .save(outputPath);
+  });
+}
