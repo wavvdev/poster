@@ -11,14 +11,19 @@ export class LiquidDnBWorker extends IWorker {
     "intro builds with a filtered synth arpeggiator sequence in minor key running sixteenth notes with ping pong delay, " +
     "rolling jungle breakbeat drops in with chopped amen breaks and tight ghost note snare fills, shuffled hi-hats with offbeat open hat accents, " +
     "deep warm rolling sub bassline with smooth reese mid-bass layered on top modulating with slow LFO, " +
+    "warm analog Juno-106 pad chords with slow filter sweep and vintage chorus, " +
+    "TB-303 acid bassline sequence with squelchy resonance filter cutoff modulation, " +
+    "retro Moog lead melody with portamento glide and warm saturation, " +
+    "SH-101 mono synth stabs hitting syncopated rhythms on the offbeats creating a bouncy groove, " +
+    "Prophet-5 polysynth brass hits layered with detuned unison voices, " +
     "melodic grand piano playing jazzy minor seventh and ninth chord progressions with soft velocity dynamics, " +
-    "bright pluck synth stabs hitting syncopated rhythms on the offbeats creating a bouncy groove, " +
-    "lush detuned saw pad chords swelling in and out with long release tails and stereo chorus, " +
     "shimmering ambient arpeggiator running through a lush reverb creating a dreamy background texture, " +
+    "OB-Xa string machine pads swelling in and out with long release tails and analog phaser, " +
     "soft pitched-down female vocal chops drenched in hall reverb floating over the mix, " +
     "orchestral string ensemble swells rising into halftime breakdowns, " +
     "subtle vinyl crackle and tape hiss adding warmth, rain and nature field recording textures in the background, " +
     "gentle wind chime and bell one-shots scattered throughout, " +
+    "retro 90s rave synth stabs and hoover sounds in the breakdowns, " +
     "soothing groovy bouncy feel with deep low end presence and wide stereo imaging, " +
     "professional mixdown with sidechain compression on the pads ducking to the kick";
 
