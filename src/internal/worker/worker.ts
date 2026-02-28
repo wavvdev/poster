@@ -2,7 +2,8 @@ import path from "path";
 import { mkdirSync, readdirSync, unlinkSync } from "fs";
 import winston from "winston";
 import logger from "../logger/logger";
-import { generateMusic, crossfadeMixAndSave, downloadTrack } from "../replicate/music";
+import { crossfadeMixAndSave, downloadTrack } from "../replicate/music";
+import { generate as generateSuno } from "../suno/suno";
 import { generateAndSave as generateAndSaveImage } from "../replicate/images";
 import { createVideo } from "../video/video";
 import { Queue } from "../queue";
@@ -14,8 +15,8 @@ export abstract class IWorker {
   abstract musicPrompt: string;
   abstract imagePrompt: string;
   abstract trackCount: number;
-  abstract musicDuration: number;
   abstract crossfadeSec: number;
+  abstract makeInstrumental: boolean;
 
   protected get log(): winston.Logger {
     return logger.child({ worker: this.name });
@@ -27,21 +28,30 @@ export abstract class IWorker {
     const dir = path.join(OUTPUT_DIR, this.name);
     mkdirSync(dir, { recursive: true });
 
-    // 1. generate tracks with different seeds (queued)
-    this.log.info("generating tracks", { count: this.trackCount });
-    const trackUrls = await Promise.all(
-      Array.from({ length: this.trackCount }, (_, i) => {
-        const seed = Math.floor(Math.random() * 2147483647);
-        this.log.info(`queuing track ${i + 1}/${this.trackCount}`, { seed });
-        return queue.enqueue(() =>
-          generateMusic(this.musicPrompt, {
-            duration: this.musicDuration,
-            seed,
-          })
-        );
-      })
-    );
-    this.log.info("all tracks generated", { count: trackUrls.length });
+    // 1. generate tracks via Suno (each call returns 2 tracks)
+    const callCount = Math.ceil(this.trackCount / 2);
+    this.log.info("generating tracks via suno", { trackCount: this.trackCount, calls: callCount });
+
+    const allTracks = (
+      await Promise.all(
+        Array.from({ length: callCount }, (_, i) => {
+          this.log.info(`queuing suno call ${i + 1}/${callCount}`);
+          return queue.enqueue(() =>
+            generateSuno({
+              prompt: this.musicPrompt,
+              make_instrumental: this.makeInstrumental,
+              wait_audio: true,
+            })
+          );
+        })
+      )
+    ).flat();
+
+    this.log.info("waiting 45s for audio to finalize");
+    await new Promise((r) => setTimeout(r, 45_000));
+
+    const trackUrls = allTracks.slice(0, this.trackCount).map((t) => t.audio_url);
+    this.log.info("all tracks ready", { count: trackUrls.length });
 
     // 2. download tracks to disk
     this.log.info("downloading tracks");
