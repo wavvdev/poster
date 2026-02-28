@@ -9,8 +9,6 @@ import { Queue } from "../queue";
 
 const OUTPUT_DIR = path.resolve(process.cwd(), "output");
 
-export const replicateQueue = new Queue(25);
-
 export abstract class IWorker {
   abstract name: string;
   abstract musicPrompt: string;
@@ -23,7 +21,7 @@ export abstract class IWorker {
     return logger.child({ worker: this.name });
   }
 
-  async run(): Promise<string> {
+  async run(queue: Queue): Promise<string> {
     this.log.info("starting pipeline");
     const ts = Date.now();
     const dir = path.join(OUTPUT_DIR, this.name);
@@ -35,7 +33,7 @@ export abstract class IWorker {
       Array.from({ length: this.trackCount }, (_, i) => {
         const seed = Math.floor(Math.random() * 2147483647);
         this.log.info(`queuing track ${i + 1}/${this.trackCount}`, { seed });
-        return replicateQueue.enqueue(() =>
+        return queue.enqueue(() =>
           generateMusic(this.musicPrompt, {
             duration: this.musicDuration,
             seed,
@@ -63,7 +61,7 @@ export abstract class IWorker {
     // 4. generate and save image (queued)
     const imagePath = path.join(dir, `cover-${ts}.png`);
     this.log.info("generating image");
-    await replicateQueue.enqueue(() =>
+    await queue.enqueue(() =>
       generateAndSaveImage(this.imagePrompt, imagePath, {
         aspectRatio: "16:9",
         outputFormat: "png",

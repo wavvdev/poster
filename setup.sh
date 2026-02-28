@@ -21,14 +21,14 @@ echo "==> Creating ~/app directory..."
 [ ! -d "$HOME/app" ] && mkdir "$HOME/app"
 cd ~/app
 
-echo "==> Cloning launch.fun repository..."
-git clone https://github.com/feesfun/launch.fun.git
-cd launch.fun
+echo "==> Cloning poster repository..."
+git clone https://github.com/wavvdev/poster.git
+cd poster
 
 echo "==> Installing dependencies..."
 yarn install
 
-pm2 start yarn --name "launch.fun" -- start
+pm2 start yarn --name "poster" -- start
 
 echo "==> Done. Versions:"
 node -v
